@@ -4,6 +4,13 @@ class Converter:
 
     def __init__(self):
 
+        # Initialise variables (such as the feedback variable)
+        self.var_feedback = StringVar()
+        self.var_feedback.set("")
+
+        self.var_has_error = StringVar()
+        self.var_has_error.set("no")
+
         # common format for all buttons
         # Arial size 14 bold, with white text
         button_font = ("Arial", "12", "bold")
@@ -42,7 +49,8 @@ class Converter:
 
         self.to_history_button = Button(self.button_frame, text="History / Export", bg="#004C99", fg=button_fg, font=button_font, width=12, state=DISABLED)
         self.to_history_button.grid(row=1, column=1, padx=5, pady=5)
-        
+    
+    # checks user input and if it's valid, converts temperature
     def check_temp(self, min_value):
 
         has_error = "no"
