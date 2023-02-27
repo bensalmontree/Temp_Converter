@@ -31,8 +31,8 @@ class Converter:
         self.temp_entry.grid(row=2, padx=10, pady=10)
 
         error = "Please enter a number"
-        self.temp_error = Label(self.temp_frame, text="", fg="#9C0000")
-        self.temp_error.grid(row=3)
+        self.output_label = Label(self.temp_frame, text="", fg="#9C0000")
+        self.output_label.grid(row=3)
 
         # Converseion, help and history / export buttons
         self.button_frame = Frame(self.temp_frame)
@@ -41,8 +41,8 @@ class Converter:
         self.to_celsius_button = Button(self.button_frame, text="To Celsius", bg="#990099", fg=button_fg, font=button_font, width=12, command=self.to_celsius)
         self.to_celsius_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.to_farenheit_button = Button(self.button_frame, text="To Farenheit", bg="#009900", fg=button_fg, font=button_font, width=12)
-        self.to_farenheit_button.grid(row=0, column=1)
+        self.to_farenheit_button = Button(self.button_frame, text="To Farenheit", bg="#009900", fg=button_fg, font=button_font, width=12, command=self.to_fahrenheit)
+        self.to_farenheit_button.grid(row=0, column=1, padx=5, pady=5)
 
         self.to_help_button = Button(self.button_frame, text="Help / Info", bg="#CC6600", fg=button_fg, font=button_font, width=12)
         self.to_help_button.grid(row=1, column=0, padx=5, pady=5)
@@ -56,33 +56,72 @@ class Converter:
         has_error = "no"
         error = "Please enter a number that is more than {}".format(min_value)
 
+        # check that user has entered a valid number...
+
+        response = self.temp_entry.get()
+
         try:
-            response = self.temp_entry.get()
             response = float(response)
 
             if response < min_value:
                 has_error = "yes"
             
         except ValueError:
-            self.temp_error.config(text=error)
+            # may remove self.temp...
+            self.output_label.config(text=error)
+            has_error = "yes"
 
-        # if the number is invalid, display error message
+        # Sets var_has_error so that entry box and labels can be correctly formatted by formatting function
         if has_error == "yes":
-            self.temp_error.config(text=error, fg="#9C0000")
+            self.var_has_error.set("yes")
+            self.var_feedback.set(error)
+            return "invalid"
+
+        # If we have no errors...
         else:
-            self.temp_error.config(text="You are OK", fg="blue")
+            # set to 'no' in case of previous errors
+            self.var_has_error.set("no")
 
-            # if we have at least one valid calculation, enable history/ export button
+            # return number to be converted and enable history button
             self.to_history_button.config(state=NORMAL)
-
-
+            return response
 
    # Check temperature is more than -459 and convert it 
     def to_celsius(self):
+        to_convert = self.check_temp(-459)
+        print(to_convert)
 
-        self.check_temp(-459)
+        if to_convert != "invalid":
+            # do calculation
+            self.var_feedback.set("Converting {} to C :)".format(to_convert))
 
+        self.output_answer()
 
+    # Check temperature is more than -273 and convert it
+    def to_fahrenheit(self):
+        to_convert = self.check_temp(-273)
+
+        if to_convert != "invalid":
+            # do calculation
+            self.var_feedback.set("Converting {} to F :)".format(to_convert))
+        
+        self.output_answer()
+
+    # Shows user output and clears entry widget ready for next calculation
+    def output_answer(self):
+        output = self.var_feedback.get()
+        has_errors = self.var_has_error.get()
+
+        if has_errors == "yes":
+            # red text, pink entry box
+            self.output_label.config(fg="#9C0000")
+            self.temp_entry.config(bg="#F8CECC")
+
+        else:
+            self.output_label.config(fg="#004C00")
+            self.temp_entry.config(bg="#FFFFFF")
+
+        self.output_label.config(text=output)
 
 # main routine
 if __name__ == "__main__":
