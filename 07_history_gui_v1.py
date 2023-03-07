@@ -9,8 +9,16 @@ class Converter:
         button_font = ("Arial", "12", "bold")
         button_fg = "#FFFFFF"
 
-        # Five item list
-        self.all_calculations = ['0 F° is -18 C°']
+        # # Five item list
+        # self.all_calculations = ['0 F° is -18 C°', '0 C° is 32 F°',
+        #                          '30 F° is -1 C°', '30 C° is 86 F°',
+        #                          '40 F° is 4 C°']
+
+        # Six item list
+        self.all_calculations = ['0 F° is -18 C°', '0 C° is 32 F°',
+                                 '30 F° is -1 C°', '30 C° is 86 F°',
+                                 '40 F° is 4 C°', '100 C° is 212 F°']
+
 
         # Set up GUI Frame
         self.temp_frame = Frame()
@@ -37,7 +45,7 @@ class HistoryExport:
         self.var_max_calcs = IntVar()
         self.var_max_calcs.set(max_calcs)
 
-        # FUnction converts contents of calculations list into a string.
+        # Function converts contents of calculations list into a string.
         calc_string_text = self.get_calc_string(calc_list)
 
         # setup diaglogue box and background colour
@@ -52,15 +60,31 @@ class HistoryExport:
         self.history_frame = Frame(self.history_box, width=300, height=200)
         self.history_frame.grid()
 
+        self.history_heading_label = Label(self.history_frame, text="History / Export", font=("Arial", "16", "bold"), width=25)
+        self.history_heading_label.grid(row=0)
+
+        # Customise text and background colour for calculation area depending on whether all or only some calculations are shown.
+        num_calcs = len(calc_list)
+
+        if num_calcs > max_calcs:
+            calc_background = "#FFE6CC" # peach
+            showing_all = "Here are your recent calculations ({}/{} calculations shown). Please export calculations to see your full calculation".format(max_calcs, num_calcs)
+
+        else:
+            calc_background = "#B4FACB" # pale green
+            showing_all = "Below is your calculation history."
+
+        # History text and label
+        hist_text = "{} \n\nAll calculations are shown to the nearest degree".format(showing_all)
+        self.text_instructions_label = Label(self.history_frame, text=hist_text, width=40, justify="left", wraplength=300, padx=10, pady=10)
+        self.text_instructions_label.grid(row=1)
+
+        self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
+
         self.dismiss_button = Button(self.history_frame, font=("Arial", "12", "bold"), text="Dismiss", bg="#666666", fg="#FFFFFF", command=partial(self.close_history, partner))
         self.dismiss_button.grid(row=2, padx=10, pady=10)
 
-        # History text and label
-        hist_text = "Below are your recent calculations - showing 3/3 calculations. All calculations are shown to the nearest degree"
-        self.text_instructions_label = Label(self.history_frame, text=hist_text, width=45, justify="left", wraplength=300, padx=10, pady=10)
-        self.text_instructions_label.grid(row=1)
-
-        self.all_calcs_label = Label(self.history_frame, text="calculations go here", padx=10, pady=10, bg="ffe6cc", width=40, justify="left")
+        self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
         self.all_calcs_label.grid(row=2)
 
         # instructions for saving files
@@ -84,6 +108,28 @@ class HistoryExport:
         self.dismiss_button = Button(self.button_frame, font=("Arial", "12", "bold"), text="Dismiss", bg="#666666", fg="#FFFFFF", width=12, command=partial(self.close_history, partner))
         self.dismiss_button.grid(row=0, column=1, padx=10, pady=10)
 
+    # change calculation list into a string so that it can be outputted as a label.
+    def get_calc_string(self, var_calculations):
+        # get maximum calculations to display (was set in __init__ funtion)
+        max_calcs = self.var_max_calcs.get()
+        calc_string = ""
+
+        # work out how many times we need to loop to output either the last five calculations or all the calculations
+        if len(var_calculations) >= max_calcs:
+            stop = max_calcs
+
+        else:
+            stop = len(var_calculations)
+
+        # iterate to all but last item, adding them and line break to calculation string
+        for item in range(0, stop -1):
+            calc_string += var_calculations[len(var_calculations) - item - 1]
+            calc_string += "\n"
+        
+        # add final item without an extra linebreak ie: last item on list will be fifth from the end!
+        calc_string += var_calculations[-max_calcs]
+
+        return calc_string
     
     # closes help dialogue ( used by button and x at top of dialogue)
     def close_history(self, partner):
