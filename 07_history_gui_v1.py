@@ -9,15 +9,15 @@ class Converter:
         button_font = ("Arial", "12", "bold")
         button_fg = "#FFFFFF"
 
-        # # Five item list
-        # self.all_calculations = ['0 F° is -18 C°', '0 C° is 32 F°',
-        #                          '30 F° is -1 C°', '30 C° is 86 F°',
-        #                          '40 F° is 4 C°']
-
-        # Six item list
+        # Five item list
         self.all_calculations = ['0 F° is -18 C°', '0 C° is 32 F°',
                                  '30 F° is -1 C°', '30 C° is 86 F°',
-                                 '40 F° is 4 C°', '100 C° is 212 F°']
+                                 '40 F° is 4 C°']
+
+        # Six item list
+        # self.all_calculations = ['0 F° is -18 C°', '0 C° is 32 F°',
+        #                          '30 F° is -1 C°', '30 C° is 86 F°',
+        #                          '40 F° is 4 C°', '100 C° is 212 F°']
 
 
         # Set up GUI Frame
@@ -78,11 +78,6 @@ class HistoryExport:
         hist_text = "{} \n\nAll calculations are shown to the nearest degree".format(showing_all)
         self.text_instructions_label = Label(self.history_frame, text=hist_text, width=40, justify="left", wraplength=300, padx=10, pady=10)
         self.text_instructions_label.grid(row=1)
-
-        self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
-
-        self.dismiss_button = Button(self.history_frame, font=("Arial", "12", "bold"), text="Dismiss", bg="#666666", fg="#FFFFFF", command=partial(self.close_history, partner))
-        self.dismiss_button.grid(row=2, padx=10, pady=10)
 
         self.all_calcs_label = Label(self.history_frame, text=calc_string_text, padx=10, pady=10, bg=calc_background, width=40, justify="left")
         self.all_calcs_label.grid(row=2)
